@@ -1,0 +1,68 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <div class="header-container">
+        <h1>InviFiles</h1>
+        <img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExODc2aXR2eXkxN29nNmh5ZHJqeHNqaHBoMjA5dDE5NWpqbzY3cGkxZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/eCwAEs05phtK/giphy.gif"
+            alt="dude you are missing gif">
+    </div>
+
+    <div class="top-bar">
+        <p>LOCATION: {{.CurrentPath}}</p>
+        <button id="select-toggle-btn" onclick="toggleSelectionMode()">SELECT ITEMS</button>
+        <div class="upload-section">
+            <form action="/upload?path={{.CurrentPath}}" method="post" enctype="multipart/form-data">
+                <input type="file" name="myFile">
+                <input type="submit" value="PUSH TO SERVER">
+            </form>
+        </div>
+    </div>
+
+    <div class="storage-container">
+        <div class="storage-text">DISK USAGE: {{.DiskLabel}}</div>
+        <div class="storage-bar-bg">
+            <div class="storage-bar-fill" style="width: {{.DiskPercent}}%;"></div>
+        </div>
+    </div>
+    <br>
+    <div class="sort-bar">
+        <button onclick="sortGrid('name')">NAME</button>
+        <button onclick="sortGrid('date')">DATE</button>
+        <button onclick="sortGrid('size')">SIZE</button>
+        <button onclick="sortGrid('type')">TYPE</button>
+    </div>
+
+    <div class="grid" id="fileGrid">
+        {{range .Files}}
+        <a href="{{if .IsDir}}/view{{else}}/download{{end}}{{.Path}}" class="item" data-path="{{.Path}}"
+            data-name="{{.Name}}" data-date="{{.ModTime}}" data-size="{{.Size}}"
+            data-type="{{if .IsDir}}dir{{else}}{{.Ext}}{{end}}" onclick="if(isSelectionMode){event.preventDefault();}">
+
+            <div class="touch-shield"></div>
+
+            <div class="thumb-box">
+                {{if .IsDir}}<i class="fa-solid fa-folder"></i>
+                {{else if .IsImage}}<img src="/thumb{{.Path}}" loading="lazy">
+                {{else}}<i class="fa-solid fa-file"></i>{{end}}
+            </div>
+            <span class="label">{{.Name}}</span>
+        </a>
+        {{end}}
+    </div>
+    <div id="action-bar">
+        <span id="selected-count" style="font-weight:bold; margin-right:10px;">0 SELECTED</span>
+        <button class="action-btn" onclick="downloadSelected()">Download ZIP</button>
+        <button class="action-btn" style="background:#ff0055;" onclick="deleteSelected()">Delete</button>
+        <button class="action-btn" style="background:#000;" onclick="clearSelection()">Cancel</button>
+    </div>
+    <script src="/static/script.js"></script>
+</body>
+
+</html>
