@@ -19,8 +19,8 @@
         <button id="select-toggle-btn" onclick="toggleSelectionMode()">SELECT ITEMS</button>
         <div class="upload-section">
             <form action="/upload?path={{.CurrentPath}}" method="post" enctype="multipart/form-data">
-                <input type="file" name="myFile">
-                <input type="submit" value="PUSH TO SERVER">
+                <input type="file" name="myFile" id="file-upload-input" required multiple>
+                <input type="submit" value="PUSH TO SERVER" id="push-server-btn" disabled>
             </form>
         </div>
     </div>
@@ -50,6 +50,12 @@
             <div class="thumb-box">
                 {{if .IsDir}}<i class="fa-solid fa-folder"></i>
                 {{else if .IsImage}}<img src="/thumb{{.Path}}" loading="lazy">
+                {{else if .IsVideo}}
+                <div style="position:relative; width:100%; height:100%;">
+                    <img src="/thumb{{.Path}}" loading="lazy" style="width:100%; height:100%; object-fit:cover;">
+                    <i class="fa-solid fa-play"
+                        style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); color:white; font-size:24px; text-shadow:0 0 5px black;"></i>
+                </div>
                 {{else}}<i class="fa-solid fa-file"></i>{{end}}
             </div>
             <span class="label">{{.Name}}</span>
@@ -61,6 +67,16 @@
         <button class="action-btn" onclick="downloadSelected()">Download ZIP</button>
         <button class="action-btn" style="background:#ff0055;" onclick="deleteSelected()">Delete</button>
         <button class="action-btn" style="background:#000;" onclick="clearSelection()">Cancel</button>
+    </div>
+    <!-- Progress Overlay -->
+    <div id="progress-overlay">
+        <div id="progress-box">
+            <div id="progress-label">UPLOADING...</div>
+            <div id="progress-bar-bg">
+                <div id="progress-bar-fill"></div>
+            </div>
+            <div id="progress-percent">0%</div>
+        </div>
     </div>
     <script src="/static/script.js"></script>
 </body>
