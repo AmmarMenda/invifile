@@ -6,3 +6,5 @@ require (
 	github.com/disintegration/imaging v1.6.2
 	golang.org/x/image v0.35.0
 )
+
+require github.com/gorilla/websocket v1.5.3

@@ -209,6 +209,7 @@ func runServer(dir string) int {
 	staticFS, _ := fs.Sub(embeddedFiles, "static")
 	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.FS(staticFS))))
 
+	mux.HandleFunc("/ws-clipboard", HandleClipboard)
 	mux.HandleFunc("/view/", listHandler)
 	mux.Handle("/download/", http.StripPrefix("/download/", http.FileServer(http.Dir(dir))))
 	mux.HandleFunc("/thumb/", thumbHandler)

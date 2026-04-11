@@ -36,7 +36,31 @@ if (fileInput && pushBtn) {
 const progressOverlay = document.getElementById("progress-overlay");
 const progressLabel = document.getElementById("progress-label");
 const progressFill = document.getElementById("progress-bar-fill");
-const progressPercent = document.getElementById("progress-percent");
+
+// Connect to the WebSocket
+const protocol = window.location.protocol === "https:" ? "wss://" : "ws://";
+const socket = new WebSocket(protocol + window.location.host + "/ws-clipboard");
+
+const clipboardBox = document.getElementById("clipboard-box");
+
+// 1. Listen for updates from the server (other devices)
+socket.onmessage = (event) => {
+  clipboardBox.value = event.data;
+};
+
+// 2. Send data to the server as you type
+clipboardBox.addEventListener("input", () => {
+  socket.send(clipboardBox.value);
+});
+
+// 3. Native Copy Function
+function copyToDevice() {
+  clipboardBox.select();
+  navigator.clipboard
+    .writeText(clipboardBox.value)
+    .then(() => alert("Text copied to local clipboard!"))
+    .catch((err) => console.error("Error copying: ", err));
+}
 
 function showProgress(label, percent) {
   progressOverlay.classList.add("active");
